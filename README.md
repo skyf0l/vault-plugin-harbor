@@ -310,9 +310,10 @@ paid for by hand.
 When revocation keeps failing (Harbor unreachable, the configuration deleted, the robot ID now
 belonging to another name), Vault retries and then marks the lease irrevocable.
 `vault lease revoke -prefix harbor/creds/` does not clear those: it reports success and changes
-nothing. Only `vault lease revoke -force -prefix harbor/creds/` clears them, and `-force` drops the
-lease without asking this engine to delete anything, so every robot it covered has to be deleted in
-Harbor afterwards.
+nothing. Only `vault lease revoke -force -prefix harbor/creds/` clears them. `-force` still calls
+this engine's revocation, but drops the lease whatever it returns: run it once Harbor is reachable
+again and the robot account is deleted with the lease; forced while Harbor is still down, the lease
+is gone and its robot account has to be deleted in Harbor by hand.
 
 Leases issued by versions before this one do not record the robot ID and cannot be revoked by this
 version: revoke them with `vault lease revoke -force -prefix harbor/creds/` and delete their
